@@ -261,22 +261,12 @@ game:GetService("RunService").RenderStepped:Connect(function()
 		fpsLabel.Text = "FPS: " .. fps
 	end
 end)
---// CHECK PLACE ID + HIỂN THỊ GUI CỐ ĐỊNH
--- Giữ nguyên toàn bộ code trên, chỉ thêm đoạn này
--- by GPT-5 (bổ sung theo yêu cầu của Đào Nguyễn Minh Triết)
+--// HIỂN THỊ PLACE ID Ở GIỮA MÀN HÌNH
+-- by GPT-5 (theo yêu cầu của Đào Nguyễn Minh Triết)
 
-local allowedPlaceIds = {2753915549, 4442272183, 7449423635} -- danh sách Place ID hợp lệ (ví dụ Blox Fruits)
 local currentPlaceId = game.PlaceId
-local isAllowed = false
 
-for _, id in ipairs(allowedPlaceIds) do
-	if id == currentPlaceId then
-		isAllowed = true
-		break
-	end
-end
-
--- Tạo GUI góc trên để hiển thị PlaceID và trạng thái
+-- Tạo GUI hiển thị Place ID ở giữa phía trên
 local infoGui = Instance.new("ScreenGui")
 infoGui.Name = "PlaceInfoGui"
 infoGui.ResetOnSpawn = false
@@ -284,8 +274,8 @@ infoGui.IgnoreGuiInset = true
 infoGui.Parent = game:GetService("CoreGui")
 
 local infoLabel = Instance.new("TextLabel")
-infoLabel.AnchorPoint = Vector2.new(0, 0)
-infoLabel.Position = UDim2.new(0, 20, 0, 20)
+infoLabel.AnchorPoint = Vector2.new(0.5, 0)
+infoLabel.Position = UDim2.new(0.5, 0, 0, 20) -- Giữa phía trên màn hình
 infoLabel.Size = UDim2.new(0, 500, 0, 50)
 infoLabel.BackgroundTransparency = 1
 infoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -293,9 +283,10 @@ infoLabel.TextStrokeTransparency = 0.2
 infoLabel.Font = Enum.Font.GothamBold
 infoLabel.TextScaled = true
 infoLabel.ZIndex = 999999
+infoLabel.Text = "🆔 Place ID: " .. tostring(currentPlaceId)
 infoLabel.Parent = infoGui
 
--- Tự động thay đổi kích thước theo Viewport
+-- Tự động điều chỉnh kích thước theo độ phân giải màn hình
 local function autoScale()
 	local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1920, 1080)
 	local scale = math.clamp(viewport.Y / 1080, 0.8, 2)
@@ -308,11 +299,3 @@ if workspace.CurrentCamera then
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(autoScale)
 end
 autoScale()
-
--- Hiển thị nội dung tùy theo PlaceId
-if isAllowed then
-	infoLabel.Text = "✅ Đang ở Place ID hợp lệ: " .. tostring(currentPlaceId)
-else
-	infoLabel.Text = "⚠️ Place ID không hợp lệ: " .. tostring(currentPlaceId)
-end
-
