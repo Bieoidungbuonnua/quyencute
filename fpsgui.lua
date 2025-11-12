@@ -38,7 +38,7 @@ mainFrame.Parent = gui
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 28)
 title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-title.Text = "🔥 Auto Spam Join Job"
+title.Text = "🔥SCRIPT JOIN BY TRIET"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = Enum.Font.SourceSansBold
 title.TextSize = 20
@@ -72,7 +72,7 @@ spamBtn.Parent = mainFrame
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0.43, 0, 0, 26)
 closeBtn.Position = UDim2.new(0.52, 0, 0.8, 0)
-closeBtn.Text = "❌ Đóng"
+closeBtn.Text = "❌ CLOSE"
 closeBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 closeBtn.TextColor3 = Color3.new(1, 1, 1)
 closeBtn.Font = Enum.Font.SourceSansBold
@@ -186,7 +186,7 @@ end)
 hopButton.MouseButton1Click:Connect(function()
 	hopButton.Text = "🔄 Đang tìm..."
 	pcall(function()
-		local placeId = 2753915549
+		local placeId = 7449423635
 		local foundServer = nil
 		local cursor = ""
 		repeat
@@ -203,7 +203,7 @@ hopButton.MouseButton1Click:Connect(function()
 			cursor = data.nextPageCursor or ""
 		until foundServer or cursor == ""
 		if foundServer then
-			hopButton.Text = "🌍 Đang vào..."
+			hopButton.Text = "🌍 Đang HOP..."
 			TeleportService:TeleportToPlaceInstance(placeId, foundServer, player)
 		else
 			hopButton.Text = "⚠️ Không có server trống!"
