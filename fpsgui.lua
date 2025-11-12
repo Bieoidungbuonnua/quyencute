@@ -184,9 +184,9 @@ copyButton.MouseButton1Click:Connect(function()
 end)
 
 hopButton.MouseButton1Click:Connect(function()
-	hopButton.Text = "🔄 Đang tìm..."
+	hopButton.Text = "🔄 Đang HOP..."
 	pcall(function()
-		local placeId = 7449423635
+		local placeId = 2753915549
 		local foundServer = nil
 		local cursor = ""
 		repeat
