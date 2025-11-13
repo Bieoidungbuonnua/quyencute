@@ -440,6 +440,27 @@ hopButton.Font = Enum.Font.SourceSansBold
 hopButton.TextSize = 20
 hopButton.Parent = frame
 Instance.new("UICorner", hopButton).CornerRadius = UDim.new(0,8)
+-- Nút Reset Character
+local resetButton = Instance.new("TextButton")
+resetButton.Size = UDim2.new(1, -20, 0, 45)
+resetButton.Position = UDim2.new(0, 10, 0, 120) -- nằm dưới nút Hop Server
+resetButton.BackgroundColor3 = Color3.fromRGB(255, 120, 50)
+resetButton.Text = "🔁 Reset Character"
+resetButton.TextColor3 = Color3.new(1, 1, 1)
+resetButton.Font = Enum.Font.SourceSansBold
+resetButton.TextSize = 20
+resetButton.Parent = frame
+Instance.new("UICorner", resetButton).CornerRadius = UDim.new(0, 8)
+
+resetButton.MouseButton1Click:Connect(function()
+	resetButton.Text = "⏳ Resetting..."
+	task.wait(1)
+	pcall(function()
+		game:GetService("Players").LocalPlayer.Character:BreakJoints()
+	end)
+	resetButton.Text = "🔁 Reset Character"
+end)
+
 
 copyButton.MouseButton1Click:Connect(function()
 	setclipboard(game.JobId)
