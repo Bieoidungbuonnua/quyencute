@@ -282,26 +282,31 @@ game:GetService("RunService").RenderStepped:Connect(function()
 	end
 end)
 
---// Gui Check Player Blox Fruit (mượt & luôn hiện)
+--// Gui Check Player Blox Fruit (Ổn định, không biến mất, không tạo nhiều bản sao)
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
--- Xóa GUI cũ nếu có
-local oldGui = LocalPlayer:FindFirstChild("PlayerGui"):FindFirstChild("PlayerCheckGui")
-if oldGui then oldGui:Destroy() end
+-- Đảm bảo PlayerGui đã có sẵn
+local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Nếu đã tồn tại GUI cũ thì xóa (tránh tạo nhiều bản sao khi script chạy lại)
+local existing = playerGui:FindFirstChild("PlayerCheckGui")
+if existing then
+    existing:Destroy()
+end
 
 -- Tạo ScreenGui mới
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PlayerCheckGui"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Parent = playerGui
 
 -- Tạo Label hiển thị số player
 local PlayerLabel = Instance.new("TextLabel")
-PlayerLabel.Size = UDim2.new(0, 150, 0, 40)
-PlayerLabel.Position = UDim2.new(0, 10, 0, 10) -- góc trái trên
-PlayerLabel.BackgroundColor3 = Color3.fromRGB(128, 0, 128) -- màu tím
+PlayerLabel.Size = UDim2.new(0, 150, 0, 40) -- Kích thước
+PlayerLabel.Position = UDim2.new(0, 10, 0, 10) -- Góc trái trên
+PlayerLabel.BackgroundColor3 = Color3.fromRGB(128, 0, 128) -- Màu tím
 PlayerLabel.BackgroundTransparency = 0.3
 PlayerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 PlayerLabel.Font = Enum.Font.SourceSansBold
@@ -309,11 +314,27 @@ PlayerLabel.TextScaled = true
 PlayerLabel.Text = "Loading..."
 PlayerLabel.Parent = ScreenGui
 
--- Update số player realtime mỗi frame
-RunService.Heartbeat:Connect(function()
-    if PlayerLabel then
+-- Cập nhật số player theo 0.5 giây 1 lần dùng RunService (mượt & nhẹ)
+local accumulator = 0
+local UPDATE_INTERVAL = 0.5 -- giây
+
+local conn
+conn = RunService.Heartbeat:Connect(function(dt)
+    accumulator = accumulator + dt
+    if accumulator >= UPDATE_INTERVAL then
+        accumulator = accumulator - UPDATE_INTERVAL
         local count = #Players:GetPlayers()
-        PlayerLabel.Text = count.."/12"
+        -- nếu muốn số max thay đổi, đổi 12 thành biến hoặc Players.MaxPlayers nếu có
+        PlayerLabel.Text = tostring(count) .. "/12"
+    end
+end)
+
+-- Khi GUI bị hủy (ví dụ do dev tool), ngắt kết nối để tránh leak
+ScreenGui.AncestryChanged:Connect(function(_, parent)
+    if not parent then
+        if conn and conn.Connected then
+            conn:Disconnect()
+        end
     end
 end)
 
@@ -355,3 +376,4 @@ if workspace.CurrentCamera then
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(autoScale)
 end
 autoScale()
+
