@@ -282,29 +282,25 @@ game:GetService("RunService").RenderStepped:Connect(function()
 	end
 end)
 
---// GUI Check Player Blox Fruit (Final – Không biến mất – Không trùng biến)
-
+--// Gui Check Player Blox Fruit (mượt & luôn hiện)
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
 
--- Xóa GUI cũ nếu script chạy lại
-local oldGui = PlayerGui:FindFirstChild("PlayerCheckGui")
-if oldGui then
-    oldGui:Destroy()
-end
+-- Xóa GUI cũ nếu có
+local oldGui = LocalPlayer:FindFirstChild("PlayerGui"):FindFirstChild("PlayerCheckGui")
+if oldGui then oldGui:Destroy() end
 
--- Tạo GUI mới
+-- Tạo ScreenGui mới
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PlayerCheckGui"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = PlayerGui
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
--- Tạo Label hiển thị số lượng player
+-- Tạo Label hiển thị số player
 local PlayerLabel = Instance.new("TextLabel")
 PlayerLabel.Size = UDim2.new(0, 150, 0, 40)
-PlayerLabel.Position = UDim2.new(0, 10, 0, 10)
+PlayerLabel.Position = UDim2.new(0, 10, 0, 50) -- ⬅⬅⬅ GIẢM CAO XUỐNG DƯỚI
 PlayerLabel.BackgroundColor3 = Color3.fromRGB(128, 0, 128)
 PlayerLabel.BackgroundTransparency = 0.3
 PlayerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -313,24 +309,11 @@ PlayerLabel.TextScaled = true
 PlayerLabel.Text = "Loading..."
 PlayerLabel.Parent = ScreenGui
 
--- Cập nhật mượt bằng Heartbeat (0.5s/lần)
-local elapsed = 0
-local interval = 0.5
-
-local connection
-connection = RunService.Heartbeat:Connect(function(dt)
-    elapsed += dt
-    if elapsed >= interval then
-        elapsed = 0
+-- Update số player realtime mỗi frame
+RunService.Heartbeat:Connect(function()
+    if PlayerLabel then
         local count = #Players:GetPlayers()
-        PlayerLabel.Text = count .. "/12"
-    end
-end)
-
--- Nếu GUI bị remove, disconnect để tránh leak
-ScreenGui.AncestryChanged:Connect(function(_, parent)
-    if not parent and connection then
-        connection:Disconnect()
+        PlayerLabel.Text = count.."/12"
     end
 end)
 
