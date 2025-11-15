@@ -282,31 +282,30 @@ game:GetService("RunService").RenderStepped:Connect(function()
 	end
 end)
 
---// Gui Check Player Blox Fruit (Ổn định, không biến mất, không tạo nhiều bản sao)
+--// GUI Check Player Blox Fruit (Final – Không biến mất – Không trùng biến)
+
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local RunService = game:GetService("RunService")
 
--- Đảm bảo PlayerGui đã có sẵn
-local playerGui = LocalPlayer:WaitForChild("PlayerGui")
-
--- Nếu đã tồn tại GUI cũ thì xóa (tránh tạo nhiều bản sao khi script chạy lại)
-local existing = playerGui:FindFirstChild("PlayerCheckGui")
-if existing then
-    existing:Destroy()
+-- Xóa GUI cũ nếu script chạy lại
+local oldGui = PlayerGui:FindFirstChild("PlayerCheckGui")
+if oldGui then
+    oldGui:Destroy()
 end
 
--- Tạo ScreenGui mới
+-- Tạo GUI mới
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PlayerCheckGui"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = playerGui
+ScreenGui.Parent = PlayerGui
 
--- Tạo Label hiển thị số player
+-- Tạo Label hiển thị số lượng player
 local PlayerLabel = Instance.new("TextLabel")
-PlayerLabel.Size = UDim2.new(0, 150, 0, 40) -- Kích thước
-PlayerLabel.Position = UDim2.new(0, 10, 0, 10) -- Góc trái trên
-PlayerLabel.BackgroundColor3 = Color3.fromRGB(128, 0, 128) -- Màu tím
+PlayerLabel.Size = UDim2.new(0, 150, 0, 40)
+PlayerLabel.Position = UDim2.new(0, 10, 0, 10)
+PlayerLabel.BackgroundColor3 = Color3.fromRGB(128, 0, 128)
 PlayerLabel.BackgroundTransparency = 0.3
 PlayerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 PlayerLabel.Font = Enum.Font.SourceSansBold
@@ -314,29 +313,27 @@ PlayerLabel.TextScaled = true
 PlayerLabel.Text = "Loading..."
 PlayerLabel.Parent = ScreenGui
 
--- Cập nhật số player theo 0.5 giây 1 lần dùng RunService (mượt & nhẹ)
-local accumulator = 0
-local UPDATE_INTERVAL = 0.5 -- giây
+-- Cập nhật mượt bằng Heartbeat (0.5s/lần)
+local elapsed = 0
+local interval = 0.5
 
-local conn
-conn = RunService.Heartbeat:Connect(function(dt)
-    accumulator = accumulator + dt
-    if accumulator >= UPDATE_INTERVAL then
-        accumulator = accumulator - UPDATE_INTERVAL
+local connection
+connection = RunService.Heartbeat:Connect(function(dt)
+    elapsed += dt
+    if elapsed >= interval then
+        elapsed = 0
         local count = #Players:GetPlayers()
-        -- nếu muốn số max thay đổi, đổi 12 thành biến hoặc Players.MaxPlayers nếu có
-        PlayerLabel.Text = tostring(count) .. "/12"
+        PlayerLabel.Text = count .. "/12"
     end
 end)
 
--- Khi GUI bị hủy (ví dụ do dev tool), ngắt kết nối để tránh leak
+-- Nếu GUI bị remove, disconnect để tránh leak
 ScreenGui.AncestryChanged:Connect(function(_, parent)
-    if not parent then
-        if conn and conn.Connected then
-            conn:Disconnect()
-        end
+    if not parent and connection then
+        connection:Disconnect()
     end
 end)
+
 
 --// HIỂN THỊ PLACE ID Ở GIỮA MÀN HÌNH
 -- by GPT-5 (theo yêu cầu của Đào Nguyễn Minh Triết)
