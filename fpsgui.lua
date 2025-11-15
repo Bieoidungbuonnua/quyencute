@@ -281,19 +281,27 @@ game:GetService("RunService").RenderStepped:Connect(function()
 		fpsLabel.Text = "FPS: " .. fps
 	end
 end)
---// Gui Check Player Blox Fruit
 
--- Tạo ScreenGui
+--// Gui Check Player Blox Fruit (mượt & luôn hiện)
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+-- Xóa GUI cũ nếu có
+local oldGui = LocalPlayer:FindFirstChild("PlayerGui"):FindFirstChild("PlayerCheckGui")
+if oldGui then oldGui:Destroy() end
+
+-- Tạo ScreenGui mới
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "PlayerCheckGui"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
--- Tạo Frame/Label hiển thị số lượng player
+-- Tạo Label hiển thị số player
 local PlayerLabel = Instance.new("TextLabel")
-PlayerLabel.Size = UDim2.new(0, 150, 0, 40) -- Kích thước
-PlayerLabel.Position = UDim2.new(0, 10, 0, 10) -- Góc trái trên
-PlayerLabel.BackgroundColor3 = Color3.fromRGB(128, 0, 128) -- Màu tím
+PlayerLabel.Size = UDim2.new(0, 150, 0, 40)
+PlayerLabel.Position = UDim2.new(0, 10, 0, 10) -- góc trái trên
+PlayerLabel.BackgroundColor3 = Color3.fromRGB(128, 0, 128) -- màu tím
 PlayerLabel.BackgroundTransparency = 0.3
 PlayerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 PlayerLabel.Font = Enum.Font.SourceSansBold
@@ -301,17 +309,13 @@ PlayerLabel.TextScaled = true
 PlayerLabel.Text = "Loading..."
 PlayerLabel.Parent = ScreenGui
 
--- Function cập nhật số player
-local function updatePlayers()
-    while true do
-        local players = #game:GetService("Players"):GetPlayers()
-        PlayerLabel.Text = players.."/12"
-        wait(1) -- Cập nhật mỗi giây
+-- Update số player realtime mỗi frame
+RunService.Heartbeat:Connect(function()
+    if PlayerLabel then
+        local count = #Players:GetPlayers()
+        PlayerLabel.Text = count.."/12"
     end
-end
-
--- Chạy function
-spawn(updatePlayers)
+end)
 
 --// HIỂN THỊ PLACE ID Ở GIỮA MÀN HÌNH
 -- by GPT-5 (theo yêu cầu của Đào Nguyễn Minh Triết)
