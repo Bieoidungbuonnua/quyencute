@@ -15,6 +15,11 @@ end
 
 --// GUI Spam Join Job ID (Tự động bật Spam)
 -- Tác giả: Đào Nguyễn Minh Triết
+local StarterGui = game:GetService("StarterGui")
+
+pcall(function()
+    StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+end)
 
 local player = game.Players.LocalPlayer
 local gui = Instance.new("ScreenGui")
