@@ -31,7 +31,6 @@ repeat task.wait() until game:IsLoaded()
 
 local Players = game:GetService("Players")
 local plr = Players.LocalPlayer
-local RunService = game:GetService("RunService")
 
 -- Xoá UI cũ nếu có
 if game.CoreGui:FindFirstChild("PlayerNameUI") then
@@ -48,38 +47,15 @@ gui.Parent = game.CoreGui
 local nameLabel = Instance.new("TextLabel")
 nameLabel.Parent = gui
 nameLabel.Size = UDim2.new(0, 260, 0, 40)
-nameLabel.Position = UDim2.new(1, -270, 1, -50)
+nameLabel.Position = UDim2.new(1, -270, 1, -50) -- góc dưới phải
 
 nameLabel.BackgroundTransparency = 1
 nameLabel.Text = plr.Name
+nameLabel.TextColor3 = Color3.fromRGB(255, 215, 0) -- vàng (gold)
 nameLabel.TextSize = 22
 nameLabel.Font = Enum.Font.GothamBold
 nameLabel.TextXAlignment = Enum.TextXAlignment.Right
 nameLabel.TextYAlignment = Enum.TextYAlignment.Center
-
--- 7 màu cầu vồng
-local colors = {
-    Color3.fromRGB(255, 0, 0),     -- đỏ
-    Color3.fromRGB(255, 165, 0),   -- cam
-    Color3.fromRGB(255, 255, 0),   -- vàng
-    Color3.fromRGB(0, 255, 0),     -- xanh lá
-    Color3.fromRGB(0, 255, 255),   -- xanh lơ
-    Color3.fromRGB(0, 0, 255),     -- xanh dương
-    Color3.fromRGB(138, 43, 226)   -- tím
-}
-
--- Loop đổi màu
-task.spawn(function()
-    local i = 1
-    while gui.Parent do
-        nameLabel.TextColor3 = colors[i]
-        i = i + 1
-        if i > #colors then
-            i = 1
-        end
-        task.wait(0.25) -- tốc độ đổi màu (giảm số = nhanh hơn)
-    end
-end)
 
 -- Khung chính
 local mainFrame = Instance.new("Frame")
